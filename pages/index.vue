@@ -1,63 +1,70 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">pokemon-app</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+    <div v-if="pokemon">
+      <p>Total{{ pokemon.count }}</p>
+      <div v-for="result in pokemon.results" :key="result.id">
+        <p>{{ result.name }}</p>
+        <img
+          :src="'https://lorempokemon.fakerapi.it/pokemon/200/' + result.name"
+          alt=""
+        />
       </div>
+
+      <a :href="pokemon.next" target="_blank">next</a>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  components: {},
+  data() {
+    return {
+      error: null,
+      searchString: null,
+      pokemon: null,
+    }
+  },
+  computed: {
+    classObject() {
+      return {
+        active: this.isActive && !this.error,
+        'text-danger': this.error && this.error.type === 'fatal',
+      }
+    },
+  },
+  mounted() {
+    this.fetchPokemons()
+  },
+  methods: {
+    fetchPokemons() {
+      const config = {
+        method: 'get',
+        url: `https://pokeapi.co/api/v2/pokemon`,
+      }
+      this.$axios(config)
+        .then((response) => {
+          console.log(response.data)
+          this.pokemon = response.data
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+  },
+}
 </script>
 
-<style>
+<style lang="scss" scoped>
 .container {
+  max-width: 1080px;
+  width: 95%;
+  // background-color: #edecf0;
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
