@@ -2,22 +2,47 @@
   <div class="container">
     <h1>Pokemon</h1>
     <div class="search-bar">
-      <input type="text" placeholder="search your pokemon" />
-      <button class="btn">Submit</button>
+      <input
+        v-model="searchString"
+        type="text"
+        placeholder="search your pokemon"
+      />
+      <button @click="searchPokemon" class="btn">Submit</button>
     </div>
-    <div v-if="pokemon" class="pokemon">
-      <div v-for="result in pokemon.results" :key="result.id" class="card">
-        <a :href="'http://localhost:3000' + pokemon.id" target="_blank"
-          ><img
-            :src="'https://lorempokemon.fakerapi.it/pokemon/200/' + result.name"
-            alt=""
-          />
-          <p>{{ result.name }}</p></a
-        >
+    <template v-if="searchPokemon">
+      <div v-if="pokemon" class="pokemon">
+        <div v-for="result in pokemon.results" :key="result.id" class="card">
+          <a :href="'http://localhost:3000' + pokemon.id" target="_blank"
+            ><img
+              :src="
+                'https://lorempokemon.fakerapi.it/pokemon/200/' + result.name
+              "
+              alt=""
+            />
+            <p>{{ result.name }}</p></a
+          >
+        </div>
+        <p>Total{{ pokemon.count }}</p>
+        <a :href="pokemon.next" target="_blank">next</a>
       </div>
-      <p>Total{{ pokemon.count }}</p>
-      <a :href="pokemon.next" target="_blank">next</a>
-    </div>
+    </template>
+    <template v-if="!searchPokemon">
+      <div v-if="pokemon" class="pokemon">
+        <div v-for="result in pokemon.results" :key="result.id" class="card">
+          <a :href="'http://localhost:3000' + pokemon.id" target="_blank"
+            ><img
+              :src="
+                'https://lorempokemon.fakerapi.it/pokemon/200/' + result.name
+              "
+              alt=""
+            />
+            <p>{{ result.name }}</p></a
+          >
+        </div>
+        <p>Total{{ pokemon.count }}</p>
+        <a :href="pokemon.next" target="_blank">next</a>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -28,6 +53,7 @@ export default {
     return {
       error: null,
       searchString: null,
+      searchPokemon: null,
       pokemon: null,
     }
   },
@@ -41,6 +67,7 @@ export default {
   },
   mounted() {
     this.fetchPokemons()
+    this.searchPokemons()
   },
   methods: {
     fetchPokemons() {
@@ -52,6 +79,19 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.pokemon = response.data
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    searchPokemons() {
+      const config = {
+        method: 'get',
+        url: `https://pokeapi.co/api/v2/pokemons=${this.searchString}`,
+      }
+      this.$axios(config)
+        .then((response) => {
+          this.searchPokemon = response.data
         })
         .catch(function (error) {
           console.log(error)

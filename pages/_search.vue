@@ -14,9 +14,12 @@
       <p>Experice:{{ pokemon.base_experience }}</p>
       <p>Height:{{ pokemon.height }}</p>
       <p>Weight:{{ pokemon.weight }}</p>
-      <p v-for="(item, id) in pokemon.moves" :key="id" class="name">
-        {{ item.move.name }}
-      </p>
+    </div>
+    <div v-for="(item, id) in pokemon.moves" :key="id" class="name">
+      <p>{{ item.move.name }}</p>
+    </div>
+    <div v-for="(item, id) in pokemon.stats" :key="id">
+      <p style="color: blue">Hello{{ item.stats }}</p>
     </div>
   </div>
 </template>
@@ -54,40 +57,20 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  max-width: 1080px;
   background-color: #edecf0;
+  width: 95%;
   margin: 0 auto;
-  height: 100vw;
   h1 {
     text-align: center;
-    text-transform: capitalize;
   }
   .img-container {
-    max-width: 18rem;
+    width: 20rem;
     margin: 0 auto;
-    background-color: #fff;
-    border-radius: 5px;
 
     img {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-content: center;
-      width: 95%;
-      padding: 5% 0;
-      margin: 1rem auto;
-    }
-  }
-  .information {
-    text-transform: capitalize;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
-    p {
-      margin-left: 0.5rem;
-      background-color: #fff;
-      padding: 8px 16px;
-      border-radius: 5px;
+      width: 100%;
+      margin: 0 auto;
     }
   }
 }
